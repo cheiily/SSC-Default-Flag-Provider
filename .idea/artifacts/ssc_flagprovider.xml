@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ssc-flagprovider">
+    <output-path>$PROJECT_DIR$/out/artifacts/ssc_flagprovider</output-path>
+    <root id="archive" name="ssc-flagprovider.jar">
+      <element id="module-output" name="ssc-flag-provider.main" />
+      <element id="library" level="project" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:2.1.20" />
+      <element id="library" level="project" name="Gradle: org.jetbrains:annotations:13.0" />
+    </root>
+  </artifact>
+</component>
