@@ -122,9 +122,12 @@ class FlagProviderTest {
         val info = flagProvider.getInfo()
         assertNotNull(info, "Plugin info should not be null")
         assertTrue(info.name.isNotEmpty(), "Plugin name should not be empty")
+        assertEquals(info.name, "Flag Provider", "Plugin name should match expected value")
         assertTrue(info.description.isNotEmpty(), "Plugin description should not be empty")
         assertTrue(info.version.isNotEmpty(), "Plugin version should not be empty")
+        assertEquals(info.version, "1.1", "Plugin version should match expected value")
         assertTrue(info.author.isNotEmpty(), "Plugin author should not be empty")
+        assertEquals(info.author, "cheily", "Plugin author should match expected value")
     }
 
     @Test
@@ -161,6 +164,7 @@ class FlagProviderTest {
         "Test Module",
         "Test Modules",
         "path/to/installation",
+        "This is a test module for unit testing purposes.",
         "This is a test module for unit testing purposes.",
         "0.0.0-test-version",
         "2025-01-01T00:00:00+00:00",

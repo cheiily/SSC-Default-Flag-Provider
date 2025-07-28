@@ -22,8 +22,10 @@ class FlagProvider : IFlagProvider {
     private val defaultFlag = javaClass.getResource(DEFAULT_FLAG_NAME)?.toURI()?.toPath()
         ?: "".toPath()
 
-    override fun getFlag(ISO2: String): BufferedImage = ImageIO.read(getFlagURL(ISO2))
+    private val definition = DefinitionParser.parse(javaClass.getResource("definition.sscm")!!.readText())
 
+
+    override fun getFlag(ISO2: String): BufferedImage = ImageIO.read(getFlagURL(ISO2))
 
     override fun getFlagURL(ISO2: String): URL =
         pathMap.values.firstNotNullOfOrNull {
@@ -38,19 +40,7 @@ class FlagProvider : IFlagProvider {
             .toString(Charset.defaultCharset())
 
 
-    override fun getInfo() = PluginData(
-        "Flag Provider",
-        """
-            This module is responsible for retrieving flag files as they are requested by the core app.
-            The requests are handled with a flag name, that should usually refer to the ISO2 country code, 
-            but in reality it's almost directly mapped to the according file name, and so it largely depends on the end user
-            and resource modules and their naming conventions.
-            This module does not contain any actual resources - it is just the file-retrieval logic.
-        """.trimIndent(),
-        "1.0.0",
-        "2025-07-28T01:04:59+02:00",
-        "_cheily"
-    )
+    override fun getInfo() = definition.toPluginInfo()
 
     override fun getHealthStatus(): PluginHealthData {
         val status = if (pathMap.isEmpty()) PluginHealthData.HealthStatus.NOT_READY else PluginHealthData.HealthStatus.READY
