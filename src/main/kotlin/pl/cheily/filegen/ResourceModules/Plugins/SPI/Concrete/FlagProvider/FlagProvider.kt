@@ -23,7 +23,7 @@ class FlagProvider : IFlagProvider {
         ?: "".toPath()
 
     private val definition: ResourceModuleDefinitionData =
-        DefinitionParser.parse(javaClass.getResource("definition.sscm")!!.readText())
+        DefinitionParser.parse(javaClass.getResource("definition.sscm.json")!!.readText())
 
 
     override fun getFlag(ISO2: String): BufferedImage = ImageIO.read(getFlagURL(ISO2))
