@@ -1,7 +1,6 @@
 package pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider
 
 import org.json.JSONObject
-import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.PluginData
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.ResourceModuleDefinitionData
 
 object DefinitionParser {
@@ -21,17 +20,10 @@ object DefinitionParser {
             obj.getBoolean("externalUrl"),
             obj.getString("resourceType"),
             obj.optString("archiveType"),
+            obj.optString("serviceInterface"),
             obj.optBoolean("autoinstall"),
             obj.optBoolean("autorun"),
             obj.optString("checksum")
         )
     }
 }
-
-fun ResourceModuleDefinitionData.toPluginInfo(): PluginData = PluginData(
-    name,
-    description,
-    version,
-    isoDate,
-    author
-)

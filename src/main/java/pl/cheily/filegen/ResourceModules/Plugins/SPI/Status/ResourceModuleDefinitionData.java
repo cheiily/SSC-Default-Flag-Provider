@@ -14,7 +14,12 @@ public record ResourceModuleDefinitionData(
         boolean externalUrl,
         String resourceType,
         String archiveType,
+        String serviceInterface,
         boolean autoinstall,
         boolean autorun,
         String checksum
-) {}
+) {
+    public String qualifiedName() {
+        return "[" + category() + "] " + name() + " - " + version();
+    }
+}

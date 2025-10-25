@@ -173,6 +173,7 @@ class FlagProviderTest {
         false,
         "STATICS_COLLECTION",
         "",
+        "",
         false,
         false,
         ""

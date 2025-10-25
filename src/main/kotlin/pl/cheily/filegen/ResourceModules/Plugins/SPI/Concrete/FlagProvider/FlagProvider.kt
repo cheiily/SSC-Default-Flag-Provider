@@ -1,8 +1,8 @@
 package pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider
 
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.IPluginBase
-import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.PluginData
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.PluginHealthData
+import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.ResourceModuleDefinitionData
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.ResourceModuleStatus
 import java.awt.image.BufferedImage
 import java.net.URL
@@ -22,7 +22,8 @@ class FlagProvider : IFlagProvider {
     private val defaultFlag = javaClass.getResource(DEFAULT_FLAG_NAME)?.toURI()?.toPath()
         ?: "".toPath()
 
-    private val definition = DefinitionParser.parse(javaClass.getResource("definition.sscm")!!.readText())
+    private val definition: ResourceModuleDefinitionData =
+        DefinitionParser.parse(javaClass.getResource("definition.sscm")!!.readText())
 
 
     override fun getFlag(ISO2: String): BufferedImage = ImageIO.read(getFlagURL(ISO2))
@@ -40,7 +41,7 @@ class FlagProvider : IFlagProvider {
             .toString(Charset.defaultCharset())
 
 
-    override fun getInfo() = definition.toPluginInfo()
+    override fun getInfo() = definition
 
     override fun getHealthStatus(): PluginHealthData {
         val status = if (pathMap.isEmpty()) PluginHealthData.HealthStatus.NOT_READY else PluginHealthData.HealthStatus.READY
