@@ -3,11 +3,11 @@ package pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider.Fixtures.mockNofuncStatusOff
+import pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider.Fixtures.mockNofuncStatusOn
+import pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider.Fixtures.mockResourcePathStatusOn
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.PluginHealthData
-import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.ResourceModuleDefinitionData
-import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.ResourceModuleStatus
 import java.nio.file.Path
-import kotlin.io.path.toPath
 import kotlin.test.assertEquals
 
 class FlagProviderTest {
@@ -39,7 +39,7 @@ class FlagProviderTest {
     fun getFlag() {
         val flagProvider = FlagProvider()
         flagProvider.acceptRequiredModuleStatus(
-            listOf(mockResourcePathStatusOn())
+            listOf(mockResourcePathStatusOn)
         )
         var flag = flagProvider.getFlag("pl")
         val plFlag = flag
@@ -67,7 +67,7 @@ class FlagProviderTest {
     fun getFlagURL() {
         val flagProvider = FlagProvider()
         flagProvider.acceptRequiredModuleStatus(
-            listOf(mockResourcePathStatusOn())
+            listOf(mockResourcePathStatusOn)
         )
         var flagURL = flagProvider.getFlagURL("pl")
         val plUrl = flagURL
@@ -93,7 +93,7 @@ class FlagProviderTest {
     fun getFlagBase64() {
         val flagProvider = FlagProvider()
         flagProvider.acceptRequiredModuleStatus(
-            listOf(mockResourcePathStatusOn())
+            listOf(mockResourcePathStatusOn)
         )
         var flagBase64 = flagProvider.getFlagBase64("pl")
         val plEnc = flagBase64
@@ -125,9 +125,11 @@ class FlagProviderTest {
         assertEquals(info.name, "Monocle Flag Provider", "Plugin name should match expected value")
         assertTrue(info.description.isNotEmpty(), "Plugin description should not be empty")
         assertTrue(info.version.isNotEmpty(), "Plugin version should not be empty")
-        assertEquals(info.version, "1.3.2", "Plugin version should match expected value")
+        assertEquals(info.version, "1.3.3", "Plugin version should match expected value")
         assertTrue(info.author.isNotEmpty(), "Plugin author should not be empty")
         assertEquals(info.author, "cheily", "Plugin author should match expected value")
+
+        assertEquals(info.checksum, null, "Plugin checksum should be null as per definition")
     }
 
     @Test
@@ -149,65 +151,16 @@ class FlagProviderTest {
         flagProvider.healthStatus.healthRecords.forEach { record ->
             assertTrue(record.status == PluginHealthData.HealthStatus.NOT_READY, "Before initialization the health record status should be NOT_READY")
         }
-        flagProvider.acceptRequiredModuleStatus(listOf(mockNofuncStatusOn()))
+        flagProvider.acceptRequiredModuleStatus(listOf(mockNofuncStatusOn))
         flagProvider.healthStatus.healthRecords.forEach { record ->
             assertTrue(record.status == PluginHealthData.HealthStatus.READY, "After initialization the health record status should be READY")
         }
-        flagProvider.acceptRequiredModuleStatus(listOf(mockNofuncStatusOff()))
+        flagProvider.acceptRequiredModuleStatus(listOf(mockNofuncStatusOff))
         flagProvider.healthStatus.healthRecords.forEach { record ->
             assertTrue(record.status == PluginHealthData.HealthStatus.NOT_READY, "After disabling the module the health record status should be NOT_READY")
         }
     }
 
-    private fun mockDefinition() = ResourceModuleDefinitionData(
-        "1",
-        "Test Module",
-        "Test Modules",
-        "path/to/installation",
-        "file.extension",
-        "This is a test module for unit testing purposes.",
-        "This is a test module for unit testing purposes.",
-        "0.0.0-test-version",
-        "2025-01-01T00:00:00+00:00",
-        "test-author",
-        "",
-        false,
-        "STATICS_COLLECTION",
-        "",
-        false,
-        false,
-        ""
-    )
-
-    private fun mockNofuncStatusOn() = ResourceModuleStatus(
-        true,
-        true,
-        true,
-        mockDefinition(),
-        "path/to/installation".toPath(),
-        "path/to/installation/file".toPath(),
-        "path/to/".toPath()
-    )
-
-    private fun mockNofuncStatusOff() = ResourceModuleStatus(
-        false,
-        false,
-        false,
-        mockDefinition(),
-        "path/to/installation".toPath(),
-        "path/to/installation/file".toPath(),
-        "path/to/".toPath()
-    )
-
-    private fun mockResourcePathStatusOn() = ResourceModuleStatus(
-        true,
-        true,
-        true,
-        mockDefinition(),
-        javaClass.getResource("pl.png")!!.toURI().toPath().parent,
-        javaClass.getResource("pl.png")!!.toURI().toPath().parent,
-        javaClass.getResource("pl.png")!!.toURI().toPath().parent
-    )
 }
 
-private fun String.toPath() = Path.of(this)
+fun String.toPath(): Path? = Path.of(this)

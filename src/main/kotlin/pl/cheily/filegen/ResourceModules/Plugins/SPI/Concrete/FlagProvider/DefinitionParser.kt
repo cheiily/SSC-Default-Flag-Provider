@@ -9,21 +9,21 @@ object DefinitionParser {
         return ResourceModuleDefinitionData(
             obj.getString("definitionVersion"),
             obj.getString("name"),
-            obj.optString("category"),
+            obj.optString("category", null),
             obj.getString("installPath"),
             obj.getString("installFileName"),
             obj.getString("shortDescription"),
-            obj.optString("description"),
+            obj.optString("description", null),
             obj.getString("version"),
-            obj.optString("isoDate"),
+            obj.optString("isoDate", null),
             obj.getString("author"),
             obj.getString("url"),
             obj.getBoolean("externalUrl"),
             obj.getString("resourceType"),
-            obj.optString("serviceInterface"),
+            obj.optString("serviceInterface", null),
             obj.optBoolean("autoinstall"),
             obj.optBoolean("autorun"),
-            obj.optString("checksum")
+            obj.optString("checksum", null),
         )
     }
 }
