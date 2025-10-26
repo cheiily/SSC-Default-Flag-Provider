@@ -1,9 +1,10 @@
 plugins {
     kotlin("jvm") version "2.1.20"
+    id("com.gradleup.shadow") version "9.2.2"
 }
 
 group = "pl.cheily"
-version = "1.3.1"
+version = "1.3.2"
 
 repositories {
     mavenCentral()
@@ -17,6 +18,11 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(21)
+}
+
+tasks.shadowJar {
+    archiveClassifier = ""
 }

@@ -122,10 +122,10 @@ class FlagProviderTest {
         val info = flagProvider.getInfo()
         assertNotNull(info, "Plugin info should not be null")
         assertTrue(info.name.isNotEmpty(), "Plugin name should not be empty")
-        assertEquals(info.name, "Flag Provider (Monocle)", "Plugin name should match expected value")
+        assertEquals(info.name, "Monocle Flag Provider", "Plugin name should match expected value")
         assertTrue(info.description.isNotEmpty(), "Plugin description should not be empty")
         assertTrue(info.version.isNotEmpty(), "Plugin version should not be empty")
-        assertEquals(info.version, "1.3.1", "Plugin version should match expected value")
+        assertEquals(info.version, "1.3.2", "Plugin version should match expected value")
         assertTrue(info.author.isNotEmpty(), "Plugin author should not be empty")
         assertEquals(info.author, "cheily", "Plugin author should match expected value")
     }
