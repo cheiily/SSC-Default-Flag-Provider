@@ -9,6 +9,7 @@ import pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider.Fixtu
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.PluginHealthData
 import java.nio.file.Path
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class FlagProviderTest {
     @Test
@@ -117,6 +118,22 @@ class FlagProviderTest {
     }
 
     @Test
+    fun getAvailableFlags() {
+        val flagProvider = FlagProvider()
+        flagProvider.acceptRequiredModuleStatus(
+            listOf(mockResourcePathStatusOn)
+        )
+        val availableFlags = flagProvider.getAvailableFlags()
+        println(availableFlags)
+        assertNotNull(availableFlags, "Available flags should not be null")
+        assertTrue(availableFlags.contains("pl.png"), "Available flags should contain 'pl.png'")
+        assertTrue(availableFlags.contains("al.png"), "Available flags should contain 'al.png'")
+        assertTrue(availableFlags.contains("valid.jpg"), "Available flags should contain files with valid formats")
+        assertFalse(availableFlags.contains("invalid.qoi"), "Available flags should not contain files with invalid formats")
+        assertFalse(availableFlags.contains("dirr"), "Available flags should not contain directories")
+    }
+
+    @Test
     fun getInfo() {
         val flagProvider = FlagProvider()
         val info = flagProvider.getInfo()
@@ -125,7 +142,7 @@ class FlagProviderTest {
         assertEquals(info.name, "Monocle Flag Provider", "Plugin name should match expected value")
         assertTrue(info.description.isNotEmpty(), "Plugin description should not be empty")
         assertTrue(info.version.isNotEmpty(), "Plugin version should not be empty")
-        assertEquals(info.version, "1.3.3", "Plugin version should match expected value")
+        assertEquals(info.version, "1.5.0", "Plugin version should match expected value")
         assertTrue(info.author.isNotEmpty(), "Plugin author should not be empty")
         assertEquals(info.author, "cheily", "Plugin author should match expected value")
 

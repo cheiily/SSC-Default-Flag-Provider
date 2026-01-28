@@ -1,6 +1,6 @@
 package pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider
 
-import pl.cheily.filegen.ResourceModules.Plugins.SPI.IPluginBase
+import pl.cheily.filegen.ResourceModules.Plugins.SPI.Requires
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.PluginHealthData
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.ResourceModuleDefinitionData
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.ResourceModuleStatus
@@ -12,10 +12,11 @@ import javax.imageio.ImageIO
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.toPath
 
-@IPluginBase.RequiresCategory(resourceModuleCategory = "flags")
+@Requires(resourceModuleCategories = ["flags-resources"])
 class FlagProvider : IFlagProvider {
     companion object {
         private const val DEFAULT_FLAG_NAME = "none.png"
+        private val VALID_FORMATS = listOf("png", "jpg", "jpeg", "gif", "bmp")
     }
 
     private val pathMap: MutableMap<String, Path> = mutableMapOf()
@@ -40,12 +41,19 @@ class FlagProvider : IFlagProvider {
             .encode(getFlagURL(ISO2).readBytes())
             .toString(Charset.defaultCharset())
 
+    override fun getAvailableFlags(): Set<String> =
+        pathMap.values
+            .flatMap { it.listDirectoryEntries("*.{${VALID_FORMATS.joinToString(",")}}") }
+            .map { it.fileName.toString() }
+            .toSet()
 
     override fun getInfo() = definition
 
     override fun getHealthStatus(): PluginHealthData {
-        val status = if (pathMap.isEmpty()) PluginHealthData.HealthStatus.NOT_READY else PluginHealthData.HealthStatus.READY
-        val message = if (status != PluginHealthData.HealthStatus.READY) "Missing resource modules." else "Method primed for modules: ${pathMap.keys}."
+        val status =
+            if (pathMap.isEmpty()) PluginHealthData.HealthStatus.NOT_READY else PluginHealthData.HealthStatus.READY
+        val message =
+            if (status != PluginHealthData.HealthStatus.READY) "Missing resource modules." else "Method primed for modules: ${pathMap.keys}."
         return PluginHealthData(
             listOf(
                 PluginHealthData.HealthRecord("getFlag", status, message),
@@ -57,7 +65,7 @@ class FlagProvider : IFlagProvider {
     }
 
     override fun acceptRequiredModuleStatus(modules: List<ResourceModuleStatus?>) {
-        modules.mapNotNull{ it }
+        modules.mapNotNull { it }
             .filter { it.isEnabled }
             .forEach {
                 pathMap.putIfAbsent(it.definition.name, it.installDirPath)
