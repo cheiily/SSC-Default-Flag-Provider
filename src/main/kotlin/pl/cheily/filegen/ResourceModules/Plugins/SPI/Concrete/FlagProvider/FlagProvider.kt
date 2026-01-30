@@ -50,15 +50,36 @@ class FlagProvider : IFlagProvider {
     override fun getInfo() = definition
 
     override fun getHealthStatus(): PluginHealthData {
-        val status =
-            if (pathMap.isEmpty()) PluginHealthData.HealthStatus.NOT_READY else PluginHealthData.HealthStatus.READY
-        val message =
-            if (status != PluginHealthData.HealthStatus.READY) "Missing resource modules." else "Method primed for modules: ${pathMap.keys}."
+
+        val status: PluginHealthData.HealthStatus
+        val message: String
+        if (pathMap.isEmpty()) {
+            status = PluginHealthData.HealthStatus.NOT_READY
+            message = "No flag content modules available."
+        } else {
+            val primedModules = mutableListOf<String>()
+            val accessErrors = mutableListOf<String>()
+            pathMap.forEach { (module, directory) ->
+                val accessError = tryAccessRandomFile(directory)
+                if (accessError.isNotEmpty()) {
+                    accessErrors += "Module '$module' access error: $accessError."
+                } else {
+                    primedModules += module
+                }
+            }
+
+            status =
+                if (primedModules.isEmpty()) PluginHealthData.HealthStatus.NOT_READY else PluginHealthData.HealthStatus.READY
+            message =
+                accessErrors.joinToString("") + if (primedModules.isNotEmpty()) "Primed modules: $primedModules." else ""
+        }
+
         return PluginHealthData(
             listOf(
                 PluginHealthData.HealthRecord("getFlag", status, message),
                 PluginHealthData.HealthRecord("getFlagURL", status, message),
-                PluginHealthData.HealthRecord("getFlagBase64", status, message)
+                PluginHealthData.HealthRecord("getFlagBase64", status, message),
+                PluginHealthData.HealthRecord("getAvailableFlags", status, message)
             ),
             message
         )
@@ -76,6 +97,15 @@ class FlagProvider : IFlagProvider {
             .forEach {
                 pathMap.remove(it.definition.name)
             }
+    }
+
+    private fun tryAccessRandomFile(directory: Path): String {
+        return try {
+            directory.listDirectoryEntries().firstOrNull()?.toUri()?.toURL()?.openStream()?.close()
+            ""
+        } catch (e: Exception) {
+            e.message ?: e.javaClass.simpleName ?: "Unknown error."
+        }
     }
 }
 

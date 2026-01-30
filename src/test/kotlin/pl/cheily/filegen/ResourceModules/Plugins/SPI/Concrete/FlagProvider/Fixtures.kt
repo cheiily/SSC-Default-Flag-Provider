@@ -25,16 +25,6 @@ object Fixtures {
         ""
     )
 
-    val mockNofuncStatusOn = ResourceModuleStatus(
-        true,
-        true,
-        true,
-        mockDefinition,
-        "path/to/installation".toPath(),
-        "path/to/installation/file".toPath(),
-        "path/to/".toPath()
-    )
-
     val mockNofuncStatusOff = ResourceModuleStatus(
         false,
         false,

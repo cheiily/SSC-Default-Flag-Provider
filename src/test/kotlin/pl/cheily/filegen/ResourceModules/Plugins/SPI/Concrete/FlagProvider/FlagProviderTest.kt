@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider.Fixtures.mockNofuncStatusOff
-import pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider.Fixtures.mockNofuncStatusOn
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Concrete.FlagProvider.Fixtures.mockResourcePathStatusOn
 import pl.cheily.filegen.ResourceModules.Plugins.SPI.Status.PluginHealthData
 import java.nio.file.Path
@@ -142,7 +141,7 @@ class FlagProviderTest {
         assertEquals(info.name, "Monocle Flag Provider", "Plugin name should match expected value")
         assertTrue(info.description.isNotEmpty(), "Plugin description should not be empty")
         assertTrue(info.version.isNotEmpty(), "Plugin version should not be empty")
-        assertEquals(info.version, "1.5.0", "Plugin version should match expected value")
+        assertEquals(info.version, "1.6.0", "Plugin version should match expected value")
         assertTrue(info.author.isNotEmpty(), "Plugin author should not be empty")
         assertEquals(info.author, "cheily", "Plugin author should match expected value")
 
@@ -154,11 +153,11 @@ class FlagProviderTest {
         val flagProvider = FlagProvider()
         val healthStatus = flagProvider.getHealthStatus()
         assertNotNull(healthStatus, "Health status should not be null")
-        assertTrue(healthStatus.message.contains("Missing"), "Default health status message should indicate missing resources")
+        assertTrue(healthStatus.message.contains("No flag content modules available."), "Default health status message should indicate missing resources")
         healthStatus.healthRecords.forEach{ record ->
             assertNotNull(record, "Health record should not be null")
             assertTrue(record.status == PluginHealthData.HealthStatus.NOT_READY, "Default health record status should be NOT_READY")
-            assertTrue(record.message.contains("Missing"), "Default health record message should indicate missing resources")
+            assertTrue(record.message.contains("No flag content modules available."), "Default health record message should indicate missing resources")
         }
     }
 
@@ -168,7 +167,7 @@ class FlagProviderTest {
         flagProvider.healthStatus.healthRecords.forEach { record ->
             assertTrue(record.status == PluginHealthData.HealthStatus.NOT_READY, "Before initialization the health record status should be NOT_READY")
         }
-        flagProvider.acceptRequiredModuleStatus(listOf(mockNofuncStatusOn))
+        flagProvider.acceptRequiredModuleStatus(listOf(mockResourcePathStatusOn))
         flagProvider.healthStatus.healthRecords.forEach { record ->
             assertTrue(record.status == PluginHealthData.HealthStatus.READY, "After initialization the health record status should be READY")
         }
